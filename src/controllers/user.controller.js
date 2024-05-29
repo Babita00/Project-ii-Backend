@@ -29,6 +29,7 @@ const registerUser = asyncHandler(async (req, res) => {
   }
 
   //check images
+  console.log(req.files);
   const coverImageLocalPath = req.files?.coverImage[0]?.path;
   console.log(coverImageLocalPath);
 
@@ -50,8 +51,10 @@ const registerUser = asyncHandler(async (req, res) => {
     password,
     username: username.lowercase,
   });
-
+  console.log(User);
   const userCreated = await user.findId(user._id).select("-password ");
+
+  console.log(userCreated);
 
   console.log("created ser is:", userCreated);
   if (!userCreated) {
