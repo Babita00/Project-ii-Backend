@@ -3,10 +3,13 @@ import { User } from "../models/user.models.js";
 import { ApiError } from "../utils/apiError.js";
 import { ApiResponse } from "../utils/apiResponse.js";
 import { uploadOnCloudinary } from "../utils/cloudinary.js";
+
 const registerUser = asyncHandler(async (req, res) => {
   //user registration
   const { firstname, lastname, email, password, username, phone } = req.body;
   console.log(req.body);
+  console.log("username:", username);
+  console.log("phone number:", phone);
   //validation
   if (
     [firstname, lastname, email, username, password, phone].some(
