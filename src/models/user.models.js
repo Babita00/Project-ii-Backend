@@ -6,8 +6,8 @@ const userSchema = new mongoose.Schema(
   {
     username: {
       type: String,
-      required: true,
-      unique: true,
+
+      // unique: true,
       lowercase: true,
       trim: true,
       index: true,
@@ -28,8 +28,7 @@ const userSchema = new mongoose.Schema(
       required: true,
     },
     phone: {
-      type: Number,
-      required: true,
+      type: String,
     },
     coverImage: {
       type: String, //cloudnary url
@@ -48,10 +47,10 @@ const userSchema = new mongoose.Schema(
   { timestamps: true },
 );
 
-userSchema.pre("save", function (next) {
-  if (this.isModified("password")) return next();
+userSchema.pre("save", async function (next) {
+  if (!this.isModified("password")) return next();
 
-  this.password = bcrypt.hash(this.password, 10);
+  this.password = await bcrypt.hash(this.password, 10);
   next();
 });
 
@@ -60,10 +59,10 @@ userSchema.methods.isPasswordCorrect = async function (password) {
   return await bcrypt.compare(password, this.password);
 };
 
-userSchema.methods.generateAccessToken = async function () {
+userSchema.methods.generateAccessToken = function () {
   try {
     // 'this' refers to the current user instance
-    const token = await jwt.sign(
+    const token = jwt.sign(
       { _id: this._id, email: this.email, username: this.username },
       process.env.ACCESS_TOKEN_SECRET,
       {
@@ -76,9 +75,9 @@ userSchema.methods.generateAccessToken = async function () {
     throw error;
   }
 };
-userSchema.methods.generateRefreshToken = async function () {
+userSchema.methods.generateRefreshToken = function () {
   try {
-    const token = await jwt.sign(
+    const token = jwt.sign(
       { _id: this._id },
       process.env.REFRESH_TOKEN_SECRET,
       {
