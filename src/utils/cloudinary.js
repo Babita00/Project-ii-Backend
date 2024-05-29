@@ -16,6 +16,7 @@ const uploadOnCloudinary = async (localFilePath) => {
     });
 
     console.log("File is uploaed in Cloudinary", response.url);
+    console.log(response);
     return response;
   } catch (error) {
     fs.unlinkSync(localFilePath); //remove the locally saved temoporary file if operation gt failed

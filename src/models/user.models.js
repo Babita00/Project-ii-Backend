@@ -1,5 +1,4 @@
 import mongoose, { Schema } from "mongoose";
-import mongooseAggregatePaginate from "mongoose-aggregate-paginate-v2";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 
@@ -24,12 +23,12 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    phone: {
-      type: Number,
-      required: true,
-    },
     lastname: {
       type: String,
+      required: true,
+    },
+    phone: {
+      type: Number,
       required: true,
     },
     coverImage: {
@@ -79,7 +78,7 @@ userSchema.methods.generateAccessToken = async function () {
 };
 userSchema.methods.generateRefreshToken = async function () {
   try {
-    const token = jwt.sign(
+    const token = await jwt.sign(
       { _id: this._id },
       process.env.REFRESH_TOKEN_SECRET,
       {
