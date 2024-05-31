@@ -1,34 +1,31 @@
-// src/middleware/jwtauth.middleware.js
+import { ApiError } from "../utils/apiError.js";
+import { asyncHandler } from "../utils/asyncHandler.js";
 import jwt from "jsonwebtoken";
+import { User } from "../models/user.model.js";
 
-const JWT_SECRET = process.env.JWT_SECRET || "your_jwt_secret_key";
+const verifyJWT = asyncHandler(async (req, _, next) => {
+  try {
+    const token = req.header("Authorization")?.replace("Bearer ", "");
 
-const authenticateJWT = (req, res, next) => {
-  const token = req.headers.authorization?.split(" ")[1];
-  if (token) {
-    jwt.verify(token, JWT_SECRET, (err, user) => {
-      if (err) {
-        return res.sendStatus(403); // Invalid token
-      }
-      req.user = user;
-      next(); // Proceed to the next middleware/route handler
-    });
-  } else {
-    res.sendStatus(401); // No token provided
+    if (!token) {
+      throw new ApiError(401, "Unauthorized request");
+    }
+
+    const decodedToken = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
+
+    const user = await User.findById(decodedToken?._id).select(
+      "-password -refreshToken",
+    );
+
+    if (!user) {
+      throw new ApiError(401, "Invalid Access Token");
+    }
+
+    req.user = user;
+    next();
+  } catch (error) {
+    throw new ApiError(401, error?.message || "Invalid access token");
   }
-};
+});
 
-const authenticateUser = (req, res) => {
-  const { username, password } = req.body;
-
-  // Authenticate user (dummy check here, replace with real logic)
-  if (username === "user" && password === "password") {
-    const user = { username };
-    const token = jwt.sign(user, JWT_SECRET, { expiresIn: "1h" });
-    res.json({ token });
-  } else {
-    res.status(401).send("Invalid credentials");
-  }
-};
-
-export { authenticateJWT, authenticateUser };
+export { verifyJWT };
