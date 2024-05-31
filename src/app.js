@@ -1,7 +1,7 @@
 // src/app.js
 import express from "express";
 import cors from "cors";
-import { authenticateJWT } from "./middleware/jwtauth.middleware.js";
+import { verifyJWT } from "./middleware/jwtauth.middleware.js";
 import UserRoute from "./routes/user.routes.js";
 
 const app = express();
@@ -21,7 +21,7 @@ app.use(express.static("public"));
 app.use("/api/v1/users", UserRoute);
 
 // Protected route example
-app.get("/api/v1/protected", authenticateJWT, (req, res) => {
+app.get("/api/v1/protected", verifyJWT, (req, res) => {
   res.send("This is a protected route");
 });
 
