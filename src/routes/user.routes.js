@@ -2,7 +2,6 @@ import { Router } from "express";
 import { registerUser } from "../controllers/user.controller.js";
 import { loginUser } from "../controllers/user.login.controller.js";
 import { logoutUser } from "../controllers/user.logout.controller.js";
-import { registerUser } from "../controllers/user.controller.js";
 import { verifyJWT } from "../middleware/jwtauth.middleware.js";
 import { upload } from "../middleware/multer.middleware.js";
 
@@ -25,5 +24,12 @@ router.route("/register").post(
 router.route("/login").post(loginUser);
 
 //logout user
-router.route("/logout").post(verifyJWT, logoutUser);
+router.route("/logout").post(logoutUser);
+
+//verify jwt
+router.route("/verifyjwt").post(verifyJWT);
+
+//change password
+router.route("/password-change").post(changeCurrentPassword);
+
 export default router;
