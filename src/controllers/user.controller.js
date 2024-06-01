@@ -30,7 +30,7 @@ const registerUser = asyncHandler(async (req, res) => {
     const coverImageLocalPath = req.files?.coverImage[0]?.path;
 
     if (!coverImageLocalPath) {
-      throw new ApiError(400, "Avater File is required");
+      throw new ApiError(400, "Cover image File is required");
     }
     //upload to cloudinary
     const coverImage = await uploadOnCloudinary(coverImageLocalPath);

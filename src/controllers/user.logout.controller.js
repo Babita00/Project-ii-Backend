@@ -5,20 +5,24 @@ import { ApiResponse } from "../utils/apiResponse.js";
 //logout user
 
 const logoutUser = asyncHandler(async (req, res) => {
-  // Invalidate tokens on the server side (optional)
-  await User.findByIdAndUpdate(
-    req.user._id,
-    {
-      $unset: {
-        refreshToken: 1, // this removes the field from document
+  try {
+    // Invalidate tokens on the server side (optional)
+    await User.findByIdAndUpdate(
+      req.user._id,
+      {
+        $unset: {
+          refreshToken: 1, // this removes the field from document
+        },
       },
-    },
-    {
-      new: true,
-    },
-  );
+      {
+        new: true,
+      },
+    );
 
-  // Respond to the client
-  return res.status(200).json(new ApiResponse(200, {}, "User logged out"));
+    // Respond to the client
+    return res.status(200).json(new ApiResponse(200, {}, "User logged out"));
+  } catch (error) {
+    return next(new ApiError(500, "Error logging out user"));
+  }
 });
 export { logoutUser };
