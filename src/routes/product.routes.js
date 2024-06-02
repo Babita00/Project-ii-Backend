@@ -2,7 +2,7 @@ import express from "express";
 import { upload } from "../middleware/multer.middleware.js";
 import { addProduct } from "../controllers/addProduct.controller.js";
 import { updateProductById } from "../controllers/updateProduct.controller.js";
-import { deleteProductById } from "../controllers/deleteProduct.js";
+import { deleteProductById } from "../controllers/deleteProduct.controller.js";
 import {
   getAllProducts,
   getProductById,
