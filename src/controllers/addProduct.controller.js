@@ -1,11 +1,12 @@
-import { Product } from "../models/product.model.js";
+import { Product } from "../models/product.models.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { ApiError } from "../utils/apiError.js";
 import { uploadOnCloudinary } from "../utils/cloudinary.js"; // Ensure this utility function is implemented
 
 // Function to add a new product
 const addProduct = asyncHandler(async (req, res, next) => {
-  const { title, description, location, amount, owner } = req.body;
+  const { title, description, location, amount, owner, productImage } =
+    req.body;
 
   // Validate required fields
   if (!title || !description || !location || !amount || !owner) {
@@ -35,7 +36,7 @@ const addProduct = asyncHandler(async (req, res, next) => {
     title,
     description,
     location,
-    photos: productImageUrls, // storing the uploaded image URLs
+    productImage: productImageUrls, // storing the uploaded image URLs
     amount,
     owner,
   });
@@ -44,10 +45,10 @@ const addProduct = asyncHandler(async (req, res, next) => {
   await product.save();
 
   // Send a response with the created product
-  res.status(201).json({
-    success: true,
-    data: product,
-  });
+
+  return res
+    .status(201)
+    .json(new ApiResponse(200, "Product Added successfully"));
 });
 
 export { addProduct };
