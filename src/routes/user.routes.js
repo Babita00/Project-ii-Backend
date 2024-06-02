@@ -4,7 +4,7 @@ import { loginUser } from "../controllers/user.login.controller.js";
 import { logoutUser } from "../controllers/user.logout.controller.js";
 import { verifyJWT } from "../middleware/jwtauth.middleware.js";
 import { upload } from "../middleware/multer.middleware.js";
-
+import { changeCurrentPassword } from "../controllers/user.changePassword.js";
 const router = Router();
 
 // Register route
@@ -30,6 +30,6 @@ router.route("/logout").post(logoutUser);
 router.route("/verifyjwt").post(verifyJWT);
 
 //change password
-router.route("/password-change").post(changeCurrentPassword);
+router.route("/passwordchange").post(changeCurrentPassword);
 
 export default router;
