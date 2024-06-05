@@ -14,7 +14,7 @@ router.route("/add").post(
   upload.fields([
     {
       name: "productImage",
-      macCount: 10,
+      maxCount: 10,
     },
   ]),
   addProduct,
@@ -27,8 +27,6 @@ router.route("/update").post(updateProductById);
 router.route("/delete").delete(deleteProductById);
 
 //to get all products
-router.route("/getAllProduct").get(getAllProducts);
+router.route("/getProduct").get(getAllProducts, getProductById);
 
-//to get a single product by ID
-router.route("/getProductbyId").get(getProductById);
 export default router;

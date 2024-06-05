@@ -13,7 +13,7 @@ router.route("/register").post(
   upload.fields([
     {
       name: "coverImage",
-      macCount: 1,
+      maxCount: 1,
     },
   ]),
 
