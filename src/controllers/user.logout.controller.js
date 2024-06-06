@@ -2,8 +2,8 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 import { User } from "../models/user.models.js";
 import { ApiError } from "../utils/apiError.js";
 import { ApiResponse } from "../utils/apiResponse.js";
-//logout user
 
+//logout user
 const logoutUser = asyncHandler(async (req, res) => {
   try {
     // Invalidate tokens on the server side (optional)
