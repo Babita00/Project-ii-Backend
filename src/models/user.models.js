@@ -4,14 +4,6 @@ import bcrypt from "bcrypt";
 
 const userSchema = new mongoose.Schema(
   {
-    username: {
-      type: String,
-
-      // unique: true,
-      lowercase: true,
-      trim: true,
-      index: true,
-    },
     email: {
       type: String,
       required: true,
@@ -26,12 +18,6 @@ const userSchema = new mongoose.Schema(
     lastname: {
       type: String,
       required: true,
-    },
-    phone: {
-      type: String,
-    },
-    coverImage: {
-      type: String, //cloudnary url
     },
     History: [
       {
