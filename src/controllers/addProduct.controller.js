@@ -5,26 +5,25 @@ import { uploadOnCloudinary } from "../utils/cloudinary.js"; // Ensure this util
 
 // Function to add a new product
 const addProduct = asyncHandler(async (req, res, next) => {
+  const { title, description, location, amount, owner, categories } = req.body;
+
+  // Validate required fields
+  if (!title || !description || !location || !amount || !owner || !categories) {
+    return next(new ApiError(400, "All fields are required"));
+  }
+
+  // Check for product images in the request
+  const productImageFiles = req.files?.productImage; // assuming 'productImage' is the field name for multiple file uploads
+  if (!productImageFiles || productImageFiles.length === 0) {
+    return next(new ApiError(400, "At least one product image is required"));
+  }
+
   try {
-    const { title, description, location, amount, owner } = req.body;
-
-    // Validate required fields
-    if (!title || !description || !location || !amount || !owner) {
-      return next(new ApiError(400, "All fields are required"));
-    }
-
-    // Check for product images in the request
-    const productImageFiles = req.files?.productImage; // assuming 'productImage' is the field name for multiple file uploads
-    if (!productImageFiles || productImageFiles.length === 0) {
-      return next(new ApiError(400, "At least one product image is required"));
-    }
-
     // Upload product images to Cloudinary
     const productImageUrls = await Promise.all(
       productImageFiles.map(async (file) => {
         try {
           const imageUrl = await uploadOnCloudinary(file.path);
-
           return imageUrl.url;
         } catch (error) {
           throw new ApiError(500, "Error uploading image to Cloudinary");
@@ -40,6 +39,7 @@ const addProduct = asyncHandler(async (req, res, next) => {
       productImage: productImageUrls, // storing the uploaded image URLs
       amount,
       owner,
+      categories, // added categories field
     });
 
     // Save the product to the database
@@ -49,11 +49,11 @@ const addProduct = asyncHandler(async (req, res, next) => {
     // Send a response with the created product
     return res.status(201).json({
       status: 200,
-      message: "Product Added successfully",
+      message: "Product added successfully",
       product: newProduct,
     });
   } catch (error) {
-    return next(new ApiError(500, "Error Adding product to database"));
+    return next(new ApiError(500, "Error adding product to database"));
   }
 });
 
