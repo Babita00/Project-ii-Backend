@@ -22,6 +22,21 @@ const productSchema = new mongoose.Schema(
       type: Number,
       required: true,
     },
+    categories: {
+      type: String,
+      enum: [
+        "1B",
+        "1BHK",
+        "2B",
+        "2BHK",
+        "2BK",
+        "3B",
+        "3BK",
+        "3BHK",
+        "Full House",
+      ],
+      required: true,
+    },
     owner: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
