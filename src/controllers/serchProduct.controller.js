@@ -20,7 +20,6 @@ export const searchProducts = asyncHandler(async (req, res, next) => {
       { title: searchRegex },
       { description: searchRegex },
       { location: searchRegex },
-      { _id: query }, // Assuming _id can also be a valid search query
     ],
   });
 

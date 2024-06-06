@@ -4,8 +4,10 @@ import cors from "cors";
 import { verifyJWT } from "./middleware/jwtauth.middleware.js";
 import UserRoute from "./routes/user.routes.js";
 import productRoute from "./routes/product.routes.js";
+import multer from "multer";
 
 const app = express();
+const upload = multer();
 
 // Middleware configuration
 app.use(

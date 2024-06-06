@@ -6,8 +6,7 @@ import { uploadOnCloudinary } from "../utils/cloudinary.js"; // Ensure this util
 // Function to add a new product
 const addProduct = asyncHandler(async (req, res, next) => {
   try {
-    const { title, description, location, amount, owner, productImage } =
-      req.body;
+    const { title, description, location, amount, owner } = req.body;
 
     // Validate required fields
     if (!title || !description || !location || !amount || !owner) {
@@ -25,7 +24,8 @@ const addProduct = asyncHandler(async (req, res, next) => {
       productImageFiles.map(async (file) => {
         try {
           const imageUrl = await uploadOnCloudinary(file.path);
-          return imageUrl;
+
+          return imageUrl.url;
         } catch (error) {
           throw new ApiError(500, "Error uploading image to Cloudinary");
         }
@@ -33,7 +33,7 @@ const addProduct = asyncHandler(async (req, res, next) => {
     );
 
     // Create a new product
-    const product = new Product({
+    const newProduct = new Product({
       title,
       description,
       location,
@@ -43,13 +43,15 @@ const addProduct = asyncHandler(async (req, res, next) => {
     });
 
     // Save the product to the database
-    await product.save();
+    await newProduct.save();
+    console.log("Product saved to database successfully");
 
     // Send a response with the created product
-
-    return res
-      .status(201)
-      .json(new ApiResponse(200, "Product Added successfully"));
+    return res.status(201).json({
+      status: 200,
+      message: "Product Added successfully",
+      product: newProduct,
+    });
   } catch (error) {
     return next(new ApiError(500, "Error Adding product to database"));
   }

@@ -15,6 +15,7 @@
   "author": "Babita Awasthi",
   "license": "ISC",
   "devDependencies": {
+    "@types/node": "^20.14.2",
     "dotenv": "^16.4.5",
     "nodemon": "^3.1.1",
     "prettier": "^3.2.5"
@@ -26,8 +27,10 @@
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
     "express": "^4.19.2",
+    "express-validator": "^7.1.0",
     "json-web-token": "^3.2.0",
     "jsonwebtoken": "^9.0.2",
+    "mongo": "^0.1.0",
     "mongoose": "^8.4.0",
     "mongoose-aggregate-paginate-v2": "^1.0.7",
     "multer": "^1.4.5-lts.1"
