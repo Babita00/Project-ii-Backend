@@ -7,6 +7,7 @@ import {
   getAllProducts,
   getProductById,
 } from "../controllers/fetchProduct.controller.js";
+import { searchProducts } from "../controllers/serchProduct.controller.js";
 const router = express.Router();
 
 //add product
@@ -28,5 +29,6 @@ router.route("/delete").delete(deleteProductById);
 
 //to get all products
 router.route("/getProduct").get(getAllProducts, getProductById);
-
+//searchproduct
+router.route("/searchProduct").get(searchProducts);
 export default router;

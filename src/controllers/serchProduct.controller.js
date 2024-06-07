@@ -1,10 +1,10 @@
-import { Product } from "../models/product.model.js";
+import { Product } from "../models/product.models.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { ApiError } from "../utils/apiError.js";
 import { ApiResponse } from "../utils/apiResponse.js";
 
 // Function to search for products
-export const searchProducts = asyncHandler(async (req, res, next) => {
+const searchProducts = asyncHandler(async (req, res, next) => {
   const { query } = req.query;
 
   if (!query) {
@@ -27,3 +27,4 @@ export const searchProducts = asyncHandler(async (req, res, next) => {
     .status(201)
     .json(new ApiResponse(200, "Searching a product......"));
 });
+export { searchProducts };
