@@ -33,15 +33,18 @@ const productSchema = new mongoose.Schema(
         "3B",
         "3BK",
         "3BHK",
+        "4BHK",
         "Full House",
+        "Studio",
+        "Shutter",
       ],
       required: true,
     },
-    owner: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
-      required: true,
-    },
+    // owner: {
+    //   type: mongoose.Schema.Types.ObjectId,
+    //   ref: "User",
+    //   required: true,
+    // },
   },
   { timestamps: true },
 );
