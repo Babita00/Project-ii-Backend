@@ -4,10 +4,8 @@ import cors from "cors";
 import { verifyJWT } from "./middleware/jwtauth.middleware.js";
 import UserRoute from "./routes/user.routes.js";
 import productRoute from "./routes/product.routes.js";
-import multer from "multer";
 
 const app = express();
-const upload = multer();
 
 // Middleware configuration
 app.use(
@@ -16,9 +14,9 @@ app.use(
     credentials: true,
   }),
 );
-app.use(express.json({ limit: "16kb" }));
+app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(express.static("public"));
+// app.use(express.static("public"));
 
 // Example route for user login (handled in user.routes.js)
 app.use("/api/v1/users", UserRoute);

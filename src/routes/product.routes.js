@@ -22,13 +22,15 @@ router.route("/add").post(
 );
 
 //update Product
-router.route("/update").post(updateProductById);
+router.route("/:id").put(updateProductById);
 
 //delete product
-router.route("/delete").delete(deleteProductById);
+router.route("/:id").delete(deleteProductById);
 
-//to get all products
-router.route("/getProduct").get(getAllProducts, getProductById);
+//to get products by id
+router.route("/:id").get(getProductById);
+//get all product
+router.route("/").get(getAllProducts);
 //searchproduct
 router.route("/searchProduct").get(searchProducts);
 export default router;
