@@ -7,9 +7,7 @@ dotenv.config({
 });
 
 const DataCollection = async () => {
-  await mongoose.connect(
-    `mongodb+srv://babita:ahcaFYq8xGgEyFRl@cluster0.yehg64m.mongodb.net/${DB_NAME}`,
-  );
+  await mongoose.connect(`${process.env.MONGODB_URL}/${DB_NAME}`);
 
   // Manually defined data
   const Property = [

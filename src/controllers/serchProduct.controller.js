@@ -23,6 +23,12 @@ const searchProducts = asyncHandler(async (req, res, next) => {
     ],
   });
 
+  if (products.length === 0) {
+    return res
+      .status(404)
+      .json(new ApiResponse(404, "No products found matching your query"));
+  }
+
   return res
     .status(201)
     .json(new ApiResponse(200, "Searching a product......"));
