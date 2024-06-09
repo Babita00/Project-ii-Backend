@@ -3,7 +3,7 @@ import express from "express";
 import cors from "cors";
 import { verifyJWT } from "./middleware/jwtauth.middleware.js";
 import UserRoute from "./routes/user.routes.js";
-import productRoute from "./routes/product.routes.js";
+import propertyRoute from "./routes/property.routes.js";
 
 const app = express();
 
@@ -26,6 +26,6 @@ app.get("/api/v1/protected", verifyJWT, (req, res) => {
   res.send("This is a protected route");
 });
 
-app.use("/api/v1/products", productRoute);
+app.use("/api/v1/properties", propertyRoute);
 
 export { app };
