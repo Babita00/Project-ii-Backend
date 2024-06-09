@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 import mongooseAggregatePaginate from "mongoose-aggregate-paginate-v2";
-const productSchema = new mongoose.Schema(
+
+const propertySchema = new mongoose.Schema(
   {
     title: {
       type: String,
@@ -10,11 +11,22 @@ const productSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    location: {
+    address: {
       type: String,
       required: true,
     },
-    productImage: {
+    location: {
+      type: {
+        type: String,
+        enum: ["Point"],
+        required: true,
+      },
+      coordinates: {
+        type: [Number],
+        required: true,
+      },
+    },
+    propertyImage: {
       type: [String],
       required: true,
     },
@@ -23,7 +35,7 @@ const productSchema = new mongoose.Schema(
       required: true,
     },
     categories: {
-      type: String,
+      type: [String],
       enum: [
         "1B",
         "1BHK",
@@ -48,5 +60,8 @@ const productSchema = new mongoose.Schema(
   },
   { timestamps: true },
 );
-productSchema.plugin(mongooseAggregatePaginate);
-export const Product = mongoose.model("Product", productSchema);
+
+propertySchema.index({ location: "2dsphere" });
+propertySchema.plugin(mongooseAggregatePaginate);
+
+export const Property = mongoose.model("Property", propertySchema);
