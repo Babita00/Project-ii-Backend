@@ -9,9 +9,14 @@ import {
 } from "../controllers/fetchProperty.controller.js";
 import { searchProperty } from "../controllers/serchProperty.controller.js";
 import {
-  addBooking,
+  bookProperty,
   cancelBooking,
 } from "../controllers/bookProperty.controller.js";
+
+import {
+  initializePayment,
+  completePayment,
+} from "../controllers/payment.controller.js";
 const router = express.Router();
 
 //add product
@@ -38,7 +43,12 @@ router.route("/").get(getAllProperties);
 //search Property
 router.route("/searchProperty").get(searchProperty);
 //book property
-router.post("/bookings", addBooking);
+router.post("/bookings", bookProperty);
 //cancel pooking
 router.put("/bookings/:bookingId/cancel", cancelBooking);
+//initialize paymrnt
+router.post("/initialize-payment", initializePayment);
+//complete payment
+router.post("/complete-payment", completePayment);
+
 export default router;

@@ -3,7 +3,7 @@ import { Property } from "../models/Property.models.js";
 import { User } from "../models/user.models.js"; // Assuming you have a User model
 
 // Add a new booking
-const addBooking = async (req, res) => {
+const bookProperty = async (req, res) => {
   try {
     const { propertyId, userId, startDate, endDate } = req.body;
 
@@ -58,4 +58,4 @@ const cancelBooking = async (req, res) => {
   }
 };
 
-export { addBooking, cancelBooking };
+export { bookProperty, cancelBooking };
