@@ -7,7 +7,7 @@ import sendEmail from "../utils/sendEmail.js";
 
 const forgotPassword = asyncHandler(async (req, res) => {
   const { email } = req.body;
-
+  //check user
   const user = await User.findOne({ email });
 
   if (!user) {
@@ -16,7 +16,7 @@ const forgotPassword = asyncHandler(async (req, res) => {
 
   // Generate reset token
   const resetToken = crypto.randomBytes(20).toString("hex");
-
+  console.log(resetToken);
   // Hash token and set to resetPasswordToken field
   user.resetPasswordToken = crypto
     .createHash("sha256")
@@ -33,7 +33,7 @@ const forgotPassword = asyncHandler(async (req, res) => {
     "host",
   )}/api/v1/auth/passwordreset/${resetToken}`;
 
-  const message = `You are receiving this email because you (or someone else) has requested the reset of a password. Please make a PUT request to: \n\n ${resetUrl}`;
+  const message = `You are receiving this email because you has requested the reset of a password. Please make a PUT request to: \n\n ${resetUrl}`;
 
   try {
     await sendEmail({
