@@ -6,9 +6,27 @@ import {
   verifyKhaltiPayment,
   initializeKhaltiPayment,
 } from "../payment/khalti.js";
+import mongoose from "mongoose";
+
+// Validate required environment variables
+const validateEnvVariables = () => {
+  const requiredVars = [
+    "KHALTI_SECRET_KEY",
+    "KHALTI_GATEWAY_URL",
+    "BACKEND_URI",
+  ];
+  requiredVars.forEach((key) => {
+    if (!process.env[key]) {
+      throw new Error(`Missing required environment variable: ${key}`);
+    }
+  });
+};
 
 // Route to initialize Khalti payment gateway
 const initializePayment = async (req, res) => {
+  const session = await mongoose.startSession();
+  session.startTransaction();
+
   try {
     const { propertyId, userId, startDate, endDate, amount, website_url } =
       req.body;
@@ -32,23 +50,33 @@ const initializePayment = async (req, res) => {
       endDate,
     });
 
-    await newBooking.save();
+    await newBooking.save({ session });
 
     // Create a payment document to store payment info
-    const newPayment = await Payment.create({
-      bookingId: newBooking._id,
-      amount: amount * 100, // Amount should be in paisa (Rs * 100)
-      paymentGateway: "khalti",
-      status: "pending",
-    });
+    const newPayment = await Payment.create(
+      [
+        {
+          propertyId: propertyId,
+          transactionId: new mongoose.Types.ObjectId().toString(),
+          pidx: new mongoose.Types.ObjectId().toString(),
+          amount: amount * 100, // Amount should be in paisa (Rs * 100)
+          paymentGateway: "khalti",
+          status: "pending",
+        },
+      ],
+      { session },
+    );
 
     const paymentInitiate = await initializeKhaltiPayment({
       amount: amount * 100, // Amount should be in paisa (Rs * 100)
-      purchase_order_id: newPayment._id, // Use the payment ID for verification later
+      purchase_order_id: newPayment[0]._id, // Use the payment ID for verification later
       purchase_order_name: `Booking for ${property.title}`,
       return_url: `${process.env.BACKEND_URI}/complete-khalti-payment`, // Can be managed from frontend as well
       website_url,
     });
+
+    await session.commitTransaction();
+    session.endSession();
 
     res.status(201).json({
       success: true,
@@ -56,6 +84,10 @@ const initializePayment = async (req, res) => {
       payment: paymentInitiate,
     });
   } catch (error) {
+    await session.abortTransaction();
+    session.endSession();
+
+    console.error("Error initializing payment:", error.message);
     res.status(500).json({ success: false, message: error.message });
   }
 };
@@ -98,7 +130,12 @@ const completePayment = async (req, res) => {
         .json({ success: false, message: "Payment verification failed" });
     }
   } catch (error) {
+    console.error("Error verifying payment:", error.message);
     res.status(500).json({ success: false, message: error.message });
   }
 };
+
+// Validate environment variables at startup
+validateEnvVariables();
+
 export { initializePayment, completePayment };
