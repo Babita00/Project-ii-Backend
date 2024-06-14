@@ -52,11 +52,11 @@ const propertySchema = new mongoose.Schema(
       ],
       required: true,
     },
-    // owner: {
-    //   type: mongoose.Schema.Types.ObjectId,
-    //   ref: "User",
-    //   required: true,
-    // },
+    status: {
+      type: String,
+      enum: ["available", "booked"],
+      default: "available",
+    },
   },
   { timestamps: true },
 );
