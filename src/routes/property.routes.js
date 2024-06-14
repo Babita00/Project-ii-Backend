@@ -41,7 +41,7 @@ router.route("/:id").get(getPropertyById);
 //get all Property
 router.route("/").get(getAllProperties);
 //search Property
-router.route("/searchProperty").get(searchProperty);
+router.route("/searchProperty").post(searchProperty);
 //book property
 router.post("/bookings", bookProperty);
 //cancel pooking
