@@ -13,6 +13,10 @@ const bookProperty = async (req, res) => {
       return res.status(404).json({ message: "Property not found" });
     }
 
+    if (property.status === "booked") {
+      return res.status(400).json({ message: "Property is already booked" });
+    }
+
     const user = await User.findById(userId);
     if (!user) {
       return res.status(404).json({ message: "User not found" });
@@ -26,10 +30,15 @@ const bookProperty = async (req, res) => {
       endDate,
     });
 
+    // Save booking and update property status
     await newBooking.save();
-    res
-      .status(201)
-      .json({ message: "Booking created successfully", booking: newBooking });
+    property.status = "booked";
+    await property.save();
+
+    res.status(201).json({
+      message: "Booking created successfully",
+      booking: newBooking,
+    });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -46,13 +55,26 @@ const cancelBooking = async (req, res) => {
       return res.status(404).json({ message: "Booking not found" });
     }
 
-    // Update booking status to 'Cancelled'
-    booking.status = "Cancelled";
-    await booking.save();
+    // Find the associated property
+    const property = await Property.findById(booking.property);
+    if (!property) {
+      return res.status(404).json({ message: "Property not found" });
+    }
 
-    res
-      .status(200)
-      .json({ message: "Booking cancelled successfully", booking });
+    // Update booking status to 'Cancelled' (if such a status exists in your Booking model)
+    booking.status = "Cancelled";
+
+    // Remove the booking
+    await Booking.deleteOne({ _id: bookingId });
+
+    // Update property status to 'available'
+    property.status = "available";
+    await property.save();
+
+    res.status(200).json({
+      message: "Booking cancelled successfully",
+      booking,
+    });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
