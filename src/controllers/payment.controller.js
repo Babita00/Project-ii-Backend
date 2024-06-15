@@ -7,73 +7,76 @@ import {
   initializeKhaltiPayment,
 } from "../payment/khalti.js";
 import mongoose from "mongoose";
+import { asyncHandler } from "../utils/asyncHandler.js";
+import { ApiError } from "../utils/apiError.js";
 
 // Validate required environment variables
 const validateEnvVariables = () => {
-  const requiredVars = [
-    "KHALTI_SECRET_KEY",
-    "KHALTI_GATEWAY_URL",
-    "BACKEND_URI",
-  ];
-  requiredVars.forEach((key) => {
-    if (!process.env[key]) {
-      throw new Error(`Missing required environment variable: ${key}`);
+  const requiredVars = ["KHALTI_SECRET_KEY", "KHALTI_URL", "WEBSITE_URI"];
+  requiredVars.forEach((varName) => {
+    if (!process.env[varName]) {
+      throw new ApiError(
+        500,
+        `Missing required environment variable: ${varName}`,
+      );
     }
   });
 };
 
+// Ensure environment variables are validated at the start
+validateEnvVariables();
+
 // Route to initialize Khalti payment gateway
-const initializePayment = async (req, res) => {
+const initializePayment = asyncHandler(async (req, res, next) => {
   const session = await mongoose.startSession();
   session.startTransaction();
 
   try {
-    const { propertyId, userId, startDate, endDate, amount, website_url } =
-      req.body;
+    const { propertyId, userId, amount } = req.body;
 
     // Validate property and user existence
     const property = await Property.findById(propertyId);
     if (!property) {
-      return res.status(404).json({ message: "Property not found" });
+      return next(new ApiError(404, "Property not found"));
     }
 
     const user = await User.findById(userId);
     if (!user) {
-      return res.status(404).json({ message: "User not found" });
+      return next(new ApiError(404, "User not found"));
     }
 
     // Create new booking
     const newBooking = new Booking({
       property: propertyId,
       user: userId,
-      startDate,
-      endDate,
     });
 
     await newBooking.save({ session });
 
     // Create a payment document to store payment info
-    const newPayment = await Payment.create(
-      [
-        {
-          propertyId: propertyId,
-          transactionId: new mongoose.Types.ObjectId().toString(),
-          pidx: new mongoose.Types.ObjectId().toString(),
-          amount: amount * 100, // Amount should be in paisa (Rs * 100)
-          paymentGateway: "khalti",
-          status: "pending",
-        },
-      ],
-      { session },
-    );
+    // const newPayment = await Payment.create(
+    //   {
+    //     propertyId: propertyId,
+    //     transactionId: new mongoose.Types.ObjectId().toString(),
+    //     pidx: new mongoose.Types.ObjectId().toString(),
+    //     amount: amount * 100, // Amount should be in paisa (Rs * 100)
+    //     paymentGateway: "khalti",
+    //     status: "pending",
+    //   },
+    //   { session },
+    // );
 
     const paymentInitiate = await initializeKhaltiPayment({
       amount: amount * 100, // Amount should be in paisa (Rs * 100)
-      purchase_order_id: newPayment[0]._id, // Use the payment ID for verification later
+      purchase_order_id: propertyId, // Use the payment ID for verification later
       purchase_order_name: `Booking for ${property.title}`,
-      return_url: `${process.env.BACKEND_URI}/complete-khalti-payment`, // Can be managed from frontend as well
-      website_url,
+      return_url: `${process.env.WEBSITE_URI}/complete-khalti-payment`, // Can be managed from frontend as well
+      website_url: `${process.env.WEBSITE_URI}`,
     });
+
+    if (!paymentInitiate) {
+      throw new ApiError(500, "Failed to initialize Khalti payment");
+    }
 
     await session.commitTransaction();
     session.endSession();
@@ -86,14 +89,12 @@ const initializePayment = async (req, res) => {
   } catch (error) {
     await session.abortTransaction();
     session.endSession();
-
-    console.error("Error initializing payment:", error.message);
-    res.status(500).json({ success: false, message: error.message });
+    return next(new ApiError(500, error.message));
   }
-};
+});
 
-// Route to verify Khalti payment
-const completePayment = async (req, res) => {
+// Route to complete payment
+const completePayment = asyncHandler(async (req, res, next) => {
   try {
     const { pidx } = req.body;
 
@@ -104,7 +105,7 @@ const completePayment = async (req, res) => {
       // Find the payment record by ID
       const payment = await Payment.findOne({ pidx });
       if (!payment) {
-        return res.status(404).json({ message: "Payment record not found" });
+        return next(new ApiError(404, "Payment record not found"));
       }
 
       // Update the payment status to success
@@ -125,17 +126,11 @@ const completePayment = async (req, res) => {
         payment,
       });
     } else {
-      res
-        .status(400)
-        .json({ success: false, message: "Payment verification failed" });
+      return next(new ApiError(400, "Payment verification failed"));
     }
   } catch (error) {
-    console.error("Error verifying payment:", error.message);
-    res.status(500).json({ success: false, message: error.message });
+    return next(new ApiError(500, `Error verifying payment: ${error.message}`));
   }
-};
-
-// Validate environment variables at startup
-validateEnvVariables();
+});
 
 export { initializePayment, completePayment };
