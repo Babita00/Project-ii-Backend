@@ -17,6 +17,8 @@ import {
   initializePayment,
   completePayment,
 } from "../controllers/payment.controller.js";
+
+import { nearestLocation } from "../controllers/nearestlocationRecommendation.controller.js";
 const router = express.Router();
 
 //add product
@@ -30,6 +32,12 @@ router.route("/add").post(
   addProperty,
 );
 
+//search Property
+router.route("/searchProperty").get(searchProperty);
+
+//nearest location
+router.route("/nearest").get(nearestLocation);
+
 //update Property
 router.route("/:id").put(updatePropertyById);
 
@@ -40,15 +48,14 @@ router.route("/:id").delete(deletePropertyById);
 router.route("/:id").get(getPropertyById);
 //get all Property
 router.route("/").get(getAllProperties);
-//search Property
-router.route("/searchProperty").post(searchProperty);
+
 //book property
-router.post("/bookings", bookProperty);
+router.route("/bookings").post(bookProperty);
 //cancel pooking
-router.put("/bookings/:bookingId/cancel", cancelBooking);
+router.route("/bookings/:bookingId/cancel").put(cancelBooking);
 //initialize paymrnt
-router.post("/initialize-payment", initializePayment);
+router.route("/initialize-payment").post(initializePayment);
 //complete payment
-router.post("/complete-payment", completePayment);
+router.route("/complete-payment").post(completePayment);
 
 export default router;
