@@ -35,7 +35,9 @@ const registerUser = asyncHandler(async (req, res) => {
       .status(201)
       .json(new ApiResponse(200, "User registered successfully"));
   } catch (error) {
-    return res.status(500).json({ message: "Internal server error", error });
+    return res
+      .status(500)
+      .json({ message: "Problem occur during registration", error });
   }
 });
 

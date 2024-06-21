@@ -8,6 +8,7 @@ import {
   forgotPassword,
   resetPassword,
 } from "../controllers/forgotPassword.controller.js";
+import { updateUser } from "../controllers/user.updateProfile.js";
 
 const router = Router();
 
@@ -27,5 +28,7 @@ router.route("/passwordchange").post(verifyJWT, changeCurrentPassword);
 //for forgot password and reset password
 router.route("/forgotpassword").post(forgotPassword);
 router.route("/passwordreset/:resetToken").put(resetPassword);
+//update profile
+router.route("/:id").put(updateUser);
 
 export default router;
