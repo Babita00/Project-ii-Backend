@@ -1,6 +1,6 @@
 import { Booking } from "../models/Booking.models.js";
 import { Property } from "../models/Property.models.js";
-import { User } from "../models/user.models.js"; // Assuming you have a User model
+import { User } from "../models/user.models.js";
 
 // Add a new booking
 const bookProperty = async (req, res) => {

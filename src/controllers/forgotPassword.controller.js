@@ -16,7 +16,6 @@ const forgotPassword = asyncHandler(async (req, res) => {
 
   // Generate 4-digit reset code
   const resetCode = Math.floor(1000 + Math.random() * 9000).toString();
-  console.log(resetCode);
 
   // Hash code and set to resetPasswordToken field
   user.resetPasswordToken = crypto
