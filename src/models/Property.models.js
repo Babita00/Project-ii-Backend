@@ -53,7 +53,7 @@ const propertySchema = new mongoose.Schema(
       required: true,
     },
     amenities: {
-      type: String,
+      type: [String],
     },
     contactNumber: {
       type: Number,
