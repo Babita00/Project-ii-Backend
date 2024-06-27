@@ -5,12 +5,29 @@ import { ApiResponse } from "../utils/apiResponse.js";
 // Function to update a product by ID
 const updatePropertyById = asyncHandler(async (req, res, next) => {
   try {
-    const { title, description, location, amount, owner, propertyImage } =
-      req.body;
+    const {
+      title,
+      description,
+      address,
+      latitude,
+      longitude,
+      amount,
+      categories,
+      propertyImage,
+    } = req.body;
 
     const updateProperty = await Property.findByIdAndUpdate(
       req.params.id,
-      { title, description, location, amount, owner, propertyImage },
+      {
+        title,
+        description,
+        address,
+        latitude,
+        longitude,
+        amount,
+        categories,
+        propertyImage,
+      },
       { new: true, runValidators: true },
     );
 
