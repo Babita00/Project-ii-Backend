@@ -1,4 +1,6 @@
 import fetch from "node-fetch";
+import Payment from "./models/Payment";
+import dbConnect from "./dbConnection";
 
 /**
  * Function to verify Khalti Payment.
@@ -7,54 +9,21 @@ import fetch from "node-fetch";
  * @throws {Error} - Throws error if the verification request fails.
  */
 const verifyKhaltiPayment = async (pidx) => {
+  await dbConnect();
+
   const headersList = {
     Authorization: `Key ${process.env.KHALTI_SECRET_KEY}`,
     "Content-Type": "application/json",
   };
 
-  const bodyContent = JSON.stringify({
-    return_url: "https://example.com/payment/",
-    website_url: "https://example.com/",
-    amount: 1300,
-    purchase_order_id: "test12",
-    purchase_order_name: "test",
-    customer_info: {
-      name: "Khalti Bahadur",
-      email: "example@gmail.com",
-      phone: "9800000123",
-    },
-    amount_breakdown: [
-      {
-        label: "Mark Price",
-        amount: 1000,
-      },
-      {
-        label: "VAT",
-        amount: 300,
-      },
-    ],
-    product_details: [
-      {
-        identity: "1234567890",
-        name: "Khalti logo",
-        total_price: 1300,
-        quantity: 1,
-        unit_price: 1300,
-      },
-    ],
-    merchant_username: "merchant_name",
-    merchant_extra: "merchant_extra",
-  });
-
   const reqOptions = {
     method: "POST",
     headers: headersList,
-    body: bodyContent,
   };
 
   try {
     const response = await fetch(
-      `${process.env.KHALTI_URL}epayment/lookup/`,
+      `${process.env.KHALTI_URL}epayment/lookup/${pidx}/`,
       reqOptions,
     );
     if (!response.ok) {
@@ -63,6 +32,11 @@ const verifyKhaltiPayment = async (pidx) => {
       throw new Error("Failed to verify Khalti payment");
     }
     const data = await response.json();
+
+    // Save to database
+    const payment = new Payment(data);
+    await payment.save();
+
     return data;
   } catch (error) {
     console.error("Error verifying Khalti payment:", error.message);
@@ -82,6 +56,8 @@ const verifyKhaltiPayment = async (pidx) => {
  * @throws {Error} - Throws error if the initialization request fails.
  */
 const initializeKhaltiPayment = async (details) => {
+  await dbConnect();
+
   const headersList = {
     Authorization: `Key ${process.env.KHALTI_SECRET_KEY}`,
     "Content-Type": "application/json",
@@ -106,6 +82,11 @@ const initializeKhaltiPayment = async (details) => {
       throw new Error("Failed to initialize Khalti payment");
     }
     const data = await response.json();
+
+    // Save to database
+    const payment = new Payment({ ...details, pidx: data.pidx });
+    await payment.save();
+
     return data;
   } catch (error) {
     console.error("Error initializing Khalti payment:", error.message);

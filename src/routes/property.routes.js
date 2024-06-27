@@ -12,13 +12,8 @@ import {
   bookProperty,
   cancelBooking,
 } from "../controllers/bookProperty.controller.js";
-
-import {
-  initializePayment,
-  completePayment,
-} from "../controllers/payment.controller.js";
-
 import { nearestLocation } from "../controllers/nearestlocationRecommendation.controller.js";
+
 const router = express.Router();
 
 //add product
@@ -51,11 +46,7 @@ router.route("/").get(getAllProperties);
 
 //book property
 router.route("/bookings").post(bookProperty);
-//cancel pooking
+//cancel booking
 router.route("/bookings/:bookingId/cancel").put(cancelBooking);
-//initialize paymrnt
-router.route("/initialize-payment").post(initializePayment);
-//complete payment
-router.route("/complete-payment").post(completePayment);
 
 export default router;

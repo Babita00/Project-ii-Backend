@@ -19,12 +19,6 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    History: [
-      {
-        type: mongoose.Types.ObjectId,
-        ref: "product",
-      },
-    ],
     password: {
       type: String,
       required: [true, "Password is required"],

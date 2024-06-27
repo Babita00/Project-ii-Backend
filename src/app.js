@@ -22,14 +22,9 @@ app.use(express.urlencoded({ extended: true }));
 
 //for chat system
 const server = http.createServer(app);
+
 // Initialize Socket.IO
-const io = new Server(server, {
-  // cors: {
-  //   origin: process.env.CORS_ORIGIN,
-  //   methods: ["GET", "POST"],
-  //   credentials: true,
-  // },
-});
+const io = new Server(server);
 
 // Socket.IO setup
 io.on("connection", (socket) => {
@@ -51,9 +46,6 @@ io.on("connection", (socket) => {
 // Routes
 app.use("/api/v1/users", UserRoute);
 app.use("/api/v1/properties", propertyRoute);
-
-// Add this route
 app.use("/api/v1/chats", chatRoutes);
-// Add the chat route
 
 export default server;
