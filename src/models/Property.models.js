@@ -52,6 +52,12 @@ const propertySchema = new mongoose.Schema(
       ],
       required: true,
     },
+    amenities: {
+      type: String,
+    },
+    contactNumber: {
+      type: Number,
+    },
     status: {
       type: String,
       enum: ["available", "booked"],

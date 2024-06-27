@@ -12,6 +12,8 @@ const addProperty = asyncHandler(async (req, res, next) => {
     latitude,
     longitude,
     amount,
+    contactNumber,
+    amenities,
     categories,
   } = req.body;
 
@@ -80,6 +82,8 @@ const addProperty = asyncHandler(async (req, res, next) => {
       propertyImage: propertyImageUrls,
       amount,
       categories,
+      contactNumber,
+      amenities,
     });
 
     // Validate the property before saving
