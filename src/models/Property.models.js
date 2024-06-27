@@ -64,6 +64,7 @@ const propertySchema = new mongoose.Schema(
         "Air Conditioning",
         "Security",
       ],
+      default: [], // Default empty array
     },
     contactNumber: {
       type: Number,
