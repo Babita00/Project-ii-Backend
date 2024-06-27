@@ -54,6 +54,16 @@ const propertySchema = new mongoose.Schema(
     },
     amenities: {
       type: [String],
+      enum: [
+        "Swimming Pool",
+        "Gym",
+        "Garden",
+        "Garage",
+        "Wi-Fi'",
+        "Parking",
+        "Air Conditioning",
+        "Security",
+      ],
     },
     contactNumber: {
       type: Number,
