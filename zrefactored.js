@@ -34,7 +34,6 @@ const handleImageUpload = async (files, next) => {
   }
 };
 
-//to create property
 const addProperty = asyncHandler(async (req, res, next) => {
   const {
     title,

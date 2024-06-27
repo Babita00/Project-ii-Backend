@@ -1,6 +1,7 @@
 import express from "express";
 import { upload } from "../middleware/multer.middleware.js";
 import { addProperty } from "../controllers/addProperty.controller.js";
+import { uploadPropertyImages } from "../controllers/addProperty.controller.js";
 import { updatePropertyById } from "../controllers/updateProperty.controller.js";
 import { deletePropertyById } from "../controllers/deleteProperty.controller.js";
 import {
@@ -16,7 +17,7 @@ import { nearestLocation } from "../controllers/nearestlocationRecommendation.co
 
 const router = express.Router();
 
-//add product
+// Route for adding a property
 router.route("/add").post(
   upload.fields([
     {
@@ -25,6 +26,17 @@ router.route("/add").post(
     },
   ]),
   addProperty,
+);
+
+// Route for uploading property images
+router.route("/uploadImages").post(
+  upload.fields([
+    {
+      name: "propertyImage",
+      maxCount: 10,
+    },
+  ]),
+  uploadPropertyImages,
 );
 
 //search Property
