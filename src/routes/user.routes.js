@@ -27,7 +27,7 @@ router.route("/passwordchange").post(verifyJWT, changeCurrentPassword);
 
 //for forgot password and reset password
 router.route("/forgotpassword").post(forgotPassword);
-router.route("/passwordreset/:resetToken").put(resetPassword);
+router.route("/passwordreset").put(resetPassword);
 //update profile
 router.route("/:id").put(updateUser);
 

@@ -1,1 +1,1 @@
-export const DB_NAME = "EASY_GHAR"
+export const DB_NAME = "EASY_GHAR";
