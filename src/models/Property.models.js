@@ -1,6 +1,5 @@
 import mongoose from "mongoose";
 import mongooseAggregatePaginate from "mongoose-aggregate-paginate-v2";
-
 const propertySchema = new mongoose.Schema(
   {
     title: {
