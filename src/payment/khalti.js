@@ -1,4 +1,4 @@
-const axios = require("axios");
+import fetch from "node-fetch";
 
 /**
  * Function to verify Khalti Payment.
@@ -12,23 +12,60 @@ const verifyKhaltiPayment = async (pidx) => {
     "Content-Type": "application/json",
   };
 
-  const bodyContent = JSON.stringify({ pidx });
+  const bodyContent = JSON.stringify({
+    return_url: "https://example.com/payment/",
+    website_url: "https://example.com/",
+    amount: 1300,
+    purchase_order_id: "test12",
+    purchase_order_name: "test",
+    customer_info: {
+      name: "Khalti Bahadur",
+      email: "example@gmail.com",
+      phone: "9800000123",
+    },
+    amount_breakdown: [
+      {
+        label: "Mark Price",
+        amount: 1000,
+      },
+      {
+        label: "VAT",
+        amount: 300,
+      },
+    ],
+    product_details: [
+      {
+        identity: "1234567890",
+        name: "Khalti logo",
+        total_price: 1300,
+        quantity: 1,
+        unit_price: 1300,
+      },
+    ],
+    merchant_username: "merchant_name",
+    merchant_extra: "merchant_extra",
+  });
 
   const reqOptions = {
-    url: `${process.env.KHALTI_GATEWAY_URL}/api/v2/epayment/lookup/`,
     method: "POST",
     headers: headersList,
-    data: bodyContent,
+    body: bodyContent,
   };
 
   try {
-    const response = await axios.request(reqOptions);
-    return response.data;
+    const response = await fetch(
+      `${process.env.KHALTI_URL}epayment/lookup/`,
+      reqOptions,
+    );
+    if (!response.ok) {
+      const errorData = await response.json();
+      console.error("Response data:", errorData);
+      throw new Error("Failed to verify Khalti payment");
+    }
+    const data = await response.json();
+    return data;
   } catch (error) {
     console.error("Error verifying Khalti payment:", error.message);
-    if (error.response) {
-      console.error("Response data:", error.response.data);
-    }
     throw new Error("Failed to verify Khalti payment");
   }
 };
@@ -53,22 +90,27 @@ const initializeKhaltiPayment = async (details) => {
   const bodyContent = JSON.stringify(details);
 
   const reqOptions = {
-    url: `${process.env.KHALTI_GATEWAY_URL}/api/v2/epayment/initiate/`,
     method: "POST",
     headers: headersList,
-    data: bodyContent,
+    body: bodyContent,
   };
 
   try {
-    const response = await axios.request(reqOptions);
-    return response.data;
+    const response = await fetch(
+      `${process.env.KHALTI_URL}epayment/initiate/`,
+      reqOptions,
+    );
+    if (!response.ok) {
+      const errorData = await response.json();
+      console.error("Response data:", errorData);
+      throw new Error("Failed to initialize Khalti payment");
+    }
+    const data = await response.json();
+    return data;
   } catch (error) {
     console.error("Error initializing Khalti payment:", error.message);
-    if (error.response) {
-      console.error("Response data:", error.response.data);
-    }
     throw new Error("Failed to initialize Khalti payment");
   }
 };
 
-module.exports = { verifyKhaltiPayment, initializeKhaltiPayment };
+export { verifyKhaltiPayment, initializeKhaltiPayment };
