@@ -20,21 +20,31 @@ app.use(
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-//for chat system
+// Create HTTP server for Socket.IO
 const server = http.createServer(app);
 
 // Initialize Socket.IO
-const io = new Server(server);
+const io = new Server(server, {
+  cors: {
+    origin: process.env.CORS_ORIGIN,
+    methods: ["GET", "POST"],
+    credentials: true,
+  },
+});
 
 // Socket.IO setup
 io.on("connection", (socket) => {
   console.log("A user connected:", socket.id);
 
   // Handle incoming chat messages
-  socket.on("chat message", async (message) => {
-    console.log("Message received:", message);
-    const chatMessage = await saveMessage(sender, receiver, message);
-    io.emit("chat message", message); // Broadcast the message to all connected clients
+  socket.on("chat message", async ({ sender, receiver, message }) => {
+    console.log("Message received:", { sender, receiver, message });
+    try {
+      const chatMessage = await saveMessage(sender, receiver, message);
+      io.emit("chat message", chatMessage); // Broadcast the message to all connected clients
+    } catch (error) {
+      console.error("Error saving message:", error);
+    }
   });
 
   // Handle disconnection
