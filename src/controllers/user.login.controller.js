@@ -36,6 +36,7 @@ const loginUser = asyncHandler(async (req, res) => {
       new ApiResponse(200, "Login successful", {
         accessToken,
         refreshToken,
+        _id,
       }),
     );
   } catch (error) {
