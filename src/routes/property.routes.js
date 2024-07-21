@@ -14,11 +14,13 @@ import {
   cancelBooking,
 } from "../controllers/bookProperty.controller.js";
 import { nearestLocation } from "../controllers/nearestlocationRecommendation.controller.js";
+import { verifyJWT } from "../middleware/jwtauth.middleware.js";
 
 const router = express.Router();
 
-// Route for adding a property
+// Route for adding a property with authentication
 router.route("/add").post(
+  verifyJWT,
   upload.fields([
     {
       name: "propertyImage",

@@ -99,6 +99,7 @@ const addProperty = asyncHandler(async (req, res, next) => {
       categories,
       contactNumber,
       amenities,
+      createdBy: req.user._id,
     });
 
     // Validate the property before saving

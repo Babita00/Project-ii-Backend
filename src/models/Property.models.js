@@ -73,6 +73,11 @@ const propertySchema = new mongoose.Schema(
       enum: ["available", "booked"],
       default: "available",
     },
+    createdBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User", // Reference to User schema
+      required: true,
+    },
   },
   { timestamps: true },
 );
