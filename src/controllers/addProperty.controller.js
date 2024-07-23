@@ -16,18 +16,20 @@ const handleImageUpload = async (files, next) => {
   if (!files || files.length === 0) {
     return next(new ApiError(400, "At least one property image is required"));
   }
+
+  const imageUrls = [];
+
   try {
-    return await Promise.all(
-      files.map(async (file) => {
-        try {
-          const imageUrl = await uploadOnCloudinary(file.path);
-          return imageUrl.url;
-        } catch (error) {
-          console.error("Cloudinary Upload Error", error);
-          throw new ApiError(500, "Error uploading image to Cloudinary");
-        }
-      }),
-    );
+    for (const file of files) {
+      try {
+        const imageUrl = await uploadOnCloudinary(file.path);
+        imageUrls.push(imageUrl.url);
+      } catch (error) {
+        console.error("Cloudinary Upload Error", error);
+        throw new ApiError(500, "Error uploading image to Cloudinary");
+      }
+    }
+    return imageUrls;
   } catch (error) {
     console.error("Image Upload Error", error);
     throw new ApiError(500, `Error uploading images: ${error.message}`);
