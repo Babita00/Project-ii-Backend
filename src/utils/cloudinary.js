@@ -1,5 +1,7 @@
 import { v2 as cloudinary } from "cloudinary";
 import fs from "fs";
+import { v4 as uuidv4 } from "uuid";
+
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_NAME,
   api_key: process.env.CLOUDINARY_API_KEY,
@@ -9,21 +11,23 @@ cloudinary.config({
 const uploadOnCloudinary = async (localFilePath) => {
   try {
     if (!localFilePath) return null;
-    //upload the file to Cloudinary
+
+    // Generate a unique public_id for each upload
+    const publicId = `property_image_${uuidv4()}`;
+
+    // Upload the file to Cloudinary
     const response = await cloudinary.uploader.upload(localFilePath, {
       resource_type: "auto",
-      public_id: "olympic_flag", // Public ID for the uploaded file
+      public_id: publicId, // Unique Public ID for the uploaded file
     });
 
     console.log("File is uploaded to Cloudinary", response.url);
-    console.log(response);
-    console.log(response.url); // Corrected typo
     fs.unlinkSync(localFilePath);
     return response;
   } catch (error) {
     console.error("Error uploading file to Cloudinary:", error);
-    fs.unlinkSync(localFilePath); //remove the locally saved temporary file if operation got failed
-    throw error; // rethrow the error to propagate it further if necessary
+    fs.unlinkSync(localFilePath); // Remove the locally saved temporary file if operation fails
+    throw error; // Rethrow the error to propagate it further if necessary
   }
 };
 
