@@ -67,6 +67,7 @@ const propertySchema = new mongoose.Schema(
     },
     contactNumber: {
       type: Number,
+      required: true,
     },
     status: {
       type: String,
