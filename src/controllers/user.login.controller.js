@@ -37,6 +37,7 @@ const loginUser = asyncHandler(async (req, res) => {
         accessToken,
         refreshToken,
         userId: user._id,
+        email: user.email,
       }),
     );
   } catch (error) {
