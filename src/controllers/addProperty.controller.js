@@ -90,24 +90,24 @@ const addProperty = asyncHandler(async (req, res, next) => {
   const propertyImageUrls = await handleImageUpload(propertyImageFiles, next);
   if (!propertyImageUrls) return;
 
-  const validAmenities = [
-    "Swimming Pool",
-    "Gym",
-    "Garden",
-    "Garage",
-    "Wi-Fi",
-    "Parking",
-    "Air Conditioning",
-    "Security",
-  ];
+  // const validAmenities = [
+  //   "Swimming Pool",
+  //   "Gym",
+  //   "Garden",
+  //   "Garage",
+  //   "Wi-Fi",
+  //   "Parking",
+  //   "Air Conditioning",
+  //   "Security",
+  // ];
 
-  const providedAmenities = amenities.filter((amenity) =>
-    validAmenities.includes(amenity),
-  );
+  // const providedAmenities = amenities.filter((amenity) =>
+  //   validAmenities.includes(amenity),
+  // );
 
-  if (providedAmenities.length !== amenities.length) {
-    return next(new ApiError(400, "Invalid amenities provided"));
-  }
+  // if (providedAmenities.length !== amenities.length) {
+  //   return next(new ApiError(400, "Invalid amenities provided"));
+  // }
 
   try {
     const newProperty = new Property({
