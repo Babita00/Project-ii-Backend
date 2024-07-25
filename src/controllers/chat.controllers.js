@@ -1,7 +1,7 @@
 import { Chat } from "../models/chat.models.js";
 import { Conversation } from "../models/conversation.models.js";
 
-const saveMessage = async (senderId, receiverId, message) => {
+const saveMessage = async (senderId, receiverId, message, isSender) => {
   try {
     let conversation = await Conversation.findOne({
       participants: { $all: [senderId, receiverId] },
@@ -19,9 +19,11 @@ const saveMessage = async (senderId, receiverId, message) => {
       receiver: receiverId,
       message,
       conversation: conversation._id,
+      isSender, // Use the isSender flag sent from the frontend
     });
 
     await chatMessage.save();
+
     return chatMessage;
   } catch (error) {
     console.error("Error saving message:", error);
