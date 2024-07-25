@@ -37,10 +37,15 @@ io.on("connection", (socket) => {
   console.log("A user connected:", socket.id);
 
   // Handle incoming chat messages
-  socket.on("chat message", async ({ sender, receiver, message }) => {
-    console.log("Message received:", { sender, receiver, message });
+  socket.on("chat message", async ({ sender, receiver, message, isSender }) => {
+    console.log("Message received:", { sender, receiver, message, isSender });
     try {
-      const chatMessage = await saveMessage(sender, receiver, message);
+      const chatMessage = await saveMessage(
+        sender,
+        receiver,
+        message,
+        isSender,
+      );
       io.emit("chat message", chatMessage); // Broadcast the message to all connected clients
     } catch (error) {
       console.error("Error saving message:", error);

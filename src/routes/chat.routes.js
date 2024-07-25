@@ -4,9 +4,14 @@ import { saveMessage, getMessages } from "../controllers/chat.controllers.js";
 const router = express.Router();
 
 router.post("/", async (req, res) => {
-  const { senderId, receiverId, message } = req.body;
+  const { senderId, receiverId, message, isSender } = req.body;
   try {
-    const chatMessage = await saveMessage(senderId, receiverId, message);
+    const chatMessage = await saveMessage(
+      senderId,
+      receiverId,
+      message,
+      isSender,
+    );
     res.status(201).json(chatMessage);
   } catch (error) {
     res.status(500).json({ error: error.message });

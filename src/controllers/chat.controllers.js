@@ -19,7 +19,7 @@ const saveMessage = async (senderId, receiverId, message, isSender) => {
       receiver: receiverId,
       message,
       conversation: conversation._id,
-      isSender, // Use the isSender flag sent from the frontend
+      isSender,
     });
 
     await chatMessage.save();

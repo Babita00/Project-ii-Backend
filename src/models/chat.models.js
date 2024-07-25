@@ -12,15 +12,13 @@ const chatSchema = new mongoose.Schema(
       ref: "User",
       required: true,
     },
-    message: {
-      type: String,
-      required: true,
-    },
+    message: { type: String, required: true },
     conversation: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Conversation",
       required: true,
     },
+    isSender: { type: String, required: true },
   },
   { timestamps: true },
 );
