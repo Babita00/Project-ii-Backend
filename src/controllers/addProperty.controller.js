@@ -23,7 +23,7 @@ const handleImageUpload = async (files, next) => {
     for (const file of files) {
       try {
         const imageUrl = await uploadOnCloudinary(file.path);
-        imageUrls.push(response.url);
+        imageUrls.push(imageUrl.url);
       } catch (error) {
         console.error("Cloudinary Upload Error", error);
         throw new ApiError(500, "Error uploading image to Cloudinary");
