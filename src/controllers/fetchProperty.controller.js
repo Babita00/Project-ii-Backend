@@ -32,4 +32,36 @@ const getPropertyById = asyncHandler(async (req, res, next) => {
   });
 });
 
-export { getAllProperties, getPropertyById };
+// Function to get properties by user ID
+const getPropertiesByUserId = asyncHandler(async (req, res, next) => {
+  const { userId } = req.params;
+
+  if (!userId) {
+    return next(new ApiError(400, "User ID is required"));
+  }
+
+  try {
+    // Find properties created by the specified user
+    const properties = await Property.find({ createdBy: userId });
+
+    if (!properties.length) {
+      return res.status(404).json({
+        status: 404,
+        message: "No properties found for this user",
+      });
+    }
+
+    // Return the found properties
+    return res.status(200).json({
+      status: 200,
+      properties,
+    });
+  } catch (error) {
+    console.error("Database Error: Error fetching properties", error);
+    return next(
+      new ApiError(500, `Error fetching properties: ${error.message}`),
+    );
+  }
+});
+
+export { getAllProperties, getPropertyById, getPropertiesByUserId };

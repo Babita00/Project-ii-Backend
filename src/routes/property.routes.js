@@ -7,6 +7,7 @@ import { deletePropertyById } from "../controllers/deleteProperty.controller.js"
 import {
   getAllProperties,
   getPropertyById,
+  getPropertiesByUserId,
 } from "../controllers/fetchProperty.controller.js";
 import { searchProperty } from "../controllers/serchProperty.controller.js";
 import {
@@ -53,6 +54,9 @@ router.route("/:id").put(updatePropertyById);
 //delete Property
 router.route("/:id").delete(deletePropertyById);
 
+//get property by user id
+
+router.route("/user/:userId").get(getPropertiesByUserId);
 //to get Property by id
 router.route("/:id").get(getPropertyById);
 //get all Property
