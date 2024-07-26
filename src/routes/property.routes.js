@@ -49,7 +49,15 @@ router.route("/searchProperty").get(searchProperty);
 router.route("/nearest").get(nearestLocation);
 
 //update Property
-router.route("/:id").put(updatePropertyById);
+router.route("/:id").put(
+  upload.fields([
+    {
+      name: "propertyImage",
+      maxCount: 10,
+    },
+  ]),
+  updatePropertyById,
+);
 
 //delete Property
 router.route("/:id").delete(deletePropertyById);
