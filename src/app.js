@@ -1,12 +1,8 @@
 import express from "express";
 import cors from "cors";
-import http from "http";
-import { Server } from "socket.io";
-import { verifyJWT } from "./middleware/jwtauth.middleware.js";
 import UserRoute from "./routes/user.routes.js";
 import propertyRoute from "./routes/property.routes.js";
 import chatRoutes from "./routes/chat.routes.js";
-import { saveMessage, getMessages } from "./controllers/chat.controllers.js";
 
 const app = express();
 
