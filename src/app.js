@@ -19,6 +19,6 @@ app.use(express.urlencoded({ extended: true }));
 // Routes
 app.use("/api/v1/users", UserRoute);
 app.use("/api/v1/properties", propertyRoute);
-app.use("/api/v1/chats", chatRoutes);
+// app.use("/api/v1/chats", chatRoutes);
 
 export default server;
