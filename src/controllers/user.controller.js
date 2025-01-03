@@ -42,7 +42,6 @@ const errorHandler = (err, req, res, next) => {
     });
   }
 
-  console.error(err); // Log the error for debugging purposes
   return res.status(500).json({
     message: "An unexpected error occurred",
     error: [],
